@@ -25,3 +25,5 @@ export const changePasswordSchema = passwordSchema.extend({
 export const confirmVefifyTokenSchema = emailSchema.extend({
   token: z.string()
 })
+
+export const confirmResetPasswordSchema = confirmVefifyTokenSchema.merge(passwordSchema)

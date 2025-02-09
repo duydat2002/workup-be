@@ -4,6 +4,7 @@ import { validateData } from '@/middlewares/validation'
 import { isAuthenticated } from '@/middlewares/auth'
 import {
   changePasswordSchema,
+  confirmResetPasswordSchema,
   confirmVefifyTokenSchema,
   emailSchema,
   passwordSchema,
@@ -32,6 +33,8 @@ router.get(
   validateData(confirmVefifyTokenSchema, 'query'),
   handleErrors(authController.verificationEmail)
 )
+router.post('/reset/send', validateData(emailSchema), handleErrors(authController.sendResetPassword))
+router.post('/reset/confirm', validateData(confirmResetPasswordSchema), handleErrors(authController.resetPassword))
 
 router.post('/signout', handleErrors(authController.signOut))
 

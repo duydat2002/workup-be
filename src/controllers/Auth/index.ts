@@ -2,7 +2,7 @@ import { Request, Response } from 'express'
 import User from '@/models/user'
 import generateOTP from '@/utils/generateOTP'
 import moment from 'moment'
-import { sendVerificationOTPMail } from '@/mails/auth'
+import { sendForgotPasswordMail, sendVerificationOTPMail } from '@/mails/auth'
 
 const authController = {
   signUpWithEmail: async (req: Request, res: Response) => {
@@ -147,6 +147,66 @@ const authController = {
       success: true,
       result: null,
       message: 'Successfully set password.'
+    })
+  },
+  sendResetPassword: async (req: Request, res: Response) => {
+    const { email } = req.body
+
+    const user = await User.findOne({ email })
+    if (!user)
+      return res.status(400).json({
+        success: false,
+        result: null,
+        message: 'User not found.'
+      })
+
+    const otp = generateOTP()
+    user.verificationOtp = otp
+    user.verificationOtpExpires = moment().add(15, 'm').toDate()
+    await user.save()
+
+    await sendForgotPasswordMail(email, user.fullname, otp)
+
+    return res.status(200).json({
+      success: true,
+      result: null,
+      message: 'Successfully send password reset.'
+    })
+  },
+  resetPassword: async (req: Request, res: Response) => {
+    const { email, pasword, token } = req.body
+
+    const user = await User.findOne({ email })
+    if (!user)
+      return res.status(400).json({
+        success: false,
+        result: null,
+        message: 'User not found.'
+      })
+
+    if (user.verificationOtp != token)
+      return res.status(400).json({
+        success: false,
+        result: null,
+        message: 'Invalid verification code.'
+      })
+
+    if (user.verificationOtpExpires && user.verificationOtpExpires < new Date())
+      return res.status(400).json({
+        success: false,
+        result: null,
+        message: 'Verification code expired.'
+      })
+
+    user.password = pasword as string
+    user.verificationOtp = ''
+    user.verificationOtpExpires = null
+    await user.save()
+
+    return res.status(200).json({
+      success: true,
+      result: null,
+      message: 'Successfully reset password.'
     })
   },
   signOut: async (req: Request, res: Response) => {
