@@ -1,0 +1,222 @@
+## PROJECT MANAGEMENT
+
+#PROJECT
+  CRUD
+
+
+
+
+#TASK
+
+#MESSAGE
+
+
+
+
+## DATABASE
+
+- Guide
+  *XXX    -> ref XXX
+  *XXX{}  -> ref XXX with populate
+  *XXX{a, b}  -> ref XXX with populate a,b
+  {a,b}   -> enum: a, b
+  ABC[]   -> array
+  ABC^    -> object
+  ABC<a>  -> type a
+
+
+User: 
+  uid: firebase uid
+  fullname
+  email
+  emailVerified
+  avatar
+  userLabels[]: *Label
+  setting^:
+
+
+Project:
+  name
+  description
+  background
+  labels: *Label{name, color}
+  projectLabels[]: *Label{name, color}
+  lead[]: *User
+  startDate
+  dueDate
+  finishDate
+  createdBy: *User{fullname, email, avatar}
+  isArchived
+  archivedBy: *User
+  archivedAt
+  comments[]: *Comment
+  members^[]:
+    user: *User{fullname, email, avatar}
+    role: {lead, editor, member}
+    status: {pending, accepted}
+  rule^
+  categories[]: *Category{}
+
+Category:
+  name
+  color
+  description
+  auto^:
+    status: {"unset", "todo", "inprogress", "completed"}
+    assign[]: *User
+  tasks[]: *Task{}
+  createdBy: *User
+  isArchived
+  archivedBy: *User
+  archivedAt
+  project: *Project
+
+Task:
+  name
+  description
+  priority: {"none", "low", "medium", "high"}
+  labels: *Label{name, color}
+  status: {"todo", "inprogress", "completed"}
+  progress
+  position^: 
+    status
+    categories
+  assignees[]: *User
+  startDate
+  dueDate
+  finishDate
+  createdBy: *User
+  isArchived
+  archivedBy: *User
+  archivedAt
+  project: *Project
+  category: *Category
+  attackments[]: *Attackment
+  approvals[]: *Approval
+  comments[]: *Comment
+
+Label:
+  name
+  color
+  ownerType: {User, Project}
+  ownerId: refPath: "ownerType"
+
+WorkReport:
+  task: *Task
+  reporter: *User
+  reviewer: *User 
+  reportProgress
+  reviewProgress
+  quality: 
+    Hoàn thành xuất sắc (Outstanding)
+    Hoàn thành đầy đủ (Satisfactory)
+    Hoàn thành một phần (Partially Completed)
+    Không hoàn thành (Not Completed)
+  status<Task status>: 
+  reportAt
+  reviewedAt
+  review
+  attachments[]: *Attackment
+
+Approval:
+  task: *Task
+  requestedBy: *User
+  reviewedBy: *User
+  description
+  approvedAt
+  feedback
+  status: {"pending", "approved", "rejected"}
+  attachments[]: *Attackment
+
+Attackment:
+  author: *User
+  task: *Task
+  approval: *Approval
+  name
+  minetype
+  url
+
+Comment:
+  author: *User
+  project: *Project
+  task: *Task
+  content
+  likes: *User
+  replies[]: *Reply
+
+Reply:
+  author: *User
+  comment: *Comment
+  content
+  likes: *User
+
+Activity:
+  user^: id, uid, fullname, email, avatar
+  project: *Project{name, background, members}
+  task: *Task{name}
+  datas^
+  type:
+    "update_project",
+    "archive_project",
+    "unarchive_project",
+    "complete_project",
+    "reopen_project",
+    "member_join_project",
+    "member_left_project",
+    "change_role_member_project",
+    "remove_member_project",
+    "create_taskgroup",
+    "update_taskgroup",
+    "archive_taskgroup",
+    "unarchive_taskgroup",
+    "remove_taskgroup",
+    "create_task",
+    "move_task",
+    "update_task",
+    "archive_task",
+    "unarchive_task",
+    "remove_task",
+    "assign_task",
+    "unassign_task",
+    "create_approval_task",
+    "update_approval_task",
+    "accept_approval_task",
+    "reject_approval_task",
+    "revoked_approval_task",
+    "comment_task",
+    "add_attachment_task",
+    "remove_attachment_task"
+
+Notification:
+  sender
+  receivers[]: User
+  project: *Project{}
+  type: {"normal", "invitation"}
+  datas^
+  action:
+    "invite_to_project",
+    "accept_join_project",
+    "unaccept_join_project",
+    "left_project",
+    "was_kicked_project",
+    "request_approval",
+    "accept_approval",
+    "reject_approval",
+    "task_assigned",
+    "task_unassigned",
+    "project_due",
+    "task_due"
+  
+UserNoti:
+  user: *User
+  notification: *Notification
+  read
+  responded
+
+ProjectTempalte:
+  name
+  description
+  categories[]: *Category
+  tasks[]: *Task
+
+

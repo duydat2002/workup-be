@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html>
+  <body>
+    <h1>Welcome to Our App!</h1>
+    <p>Hello <%= name %>,</p>
+    <p>Thank you for registering with our app. We're excited to have you on board!</p>
+    <% if (isNewUser) { %>
+    <p>As a new user, here are some tips to get started:</p>
+    <ul>
+      <% tips.forEach(function(tip) { %>
+      <li><%= tip %></li>
+      <% }); %>
+    </ul>
+    <% } %>
+  </body>
+</html>
