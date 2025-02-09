@@ -49,22 +49,16 @@ const UserSchema = new Schema(
     verificationOtpExpires: {
       type: Date,
       default: null
-    }
-    // createdProjectLabels: [
-    //   {
-    //     type: Schema.Types.ObjectId,
-    //     ref: 'Label',
-    //     autopopulate: {
-    //       maxDepth: 1
-    //     }
-    //   }
-    // ],
-    // projects: [
-    //   {
-    //     type: Schema.Types.ObjectId,
-    //     ref: 'Project'
-    //   }
-    // ]
+    },
+    userLabels: [
+      {
+        type: Schema.Types.ObjectId,
+        ref: 'Label',
+        autopopulate: {
+          maxDepth: 1
+        }
+      }
+    ]
   },
   { timestamps: true }
 )

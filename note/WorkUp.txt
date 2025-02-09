@@ -39,7 +39,7 @@ Project:
   name
   description
   background
-  labels: *Label{name, color}
+  labels[]: *Label{name, color}
   projectLabels[]: *Label{name, color}
   lead[]: *User
   startDate
