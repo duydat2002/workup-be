@@ -29,9 +29,9 @@ const authController = {
     })
   },
   signIn: async (req: Request, res: Response) => {
-    res.status(200).json({
+    return res.status(200).json({
       success: true,
-      result: { user: req.user },
+      result: { user: { ...req.user, password: 0 } },
       message: 'Successfully signin.'
     })
   },

@@ -23,6 +23,7 @@ passport.use(
         if (!isMatch) {
           return done(null, false, { message: 'Incorrect password.' })
         }
+
         return done(null, user)
       } catch (error) {
         return done(error)
@@ -71,7 +72,7 @@ passport.use(
 passport.serializeUser((user, done) => done(null, user.id))
 passport.deserializeUser(async (id, done) => {
   try {
-    const user = await User.findById(id)
+    const user = await User.findById(id, { password: 0 })
     done(null, user)
   } catch (err) {
     done(err)

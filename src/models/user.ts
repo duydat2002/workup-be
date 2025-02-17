@@ -13,6 +13,7 @@ export type UserDocument = Document & {
   emailVerified: boolean
   verificationOtp: string
   verificationOtpExpires: Date | null
+  userLabels: string[]
   verifyPassword(candidatePassword: string): boolean
 }
 
@@ -53,10 +54,7 @@ const UserSchema = new Schema(
     userLabels: [
       {
         type: Schema.Types.ObjectId,
-        ref: 'Label',
-        autopopulate: {
-          maxDepth: 1
-        }
+        ref: 'Label'
       }
     ]
   },

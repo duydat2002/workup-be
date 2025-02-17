@@ -8,12 +8,24 @@ import cookieParser from 'cookie-parser'
 import passport from '@/configs/passport'
 import session from 'express-session'
 import MongoStore from 'connect-mongo'
+import { Server } from 'socket.io'
 import { sendMail } from './mails'
 
 const app = express()
 const port = 3000
 
+const corsOrigins = process.env.CORS_ALLOWED_ORIGINS
+  ? process.env.CORS_ALLOWED_ORIGINS.split(',')
+  : ['https://admin.socket.io']
+
 const server = createServer(app)
+const io = new Server(server, {
+  cors: {
+    origin: corsOrigins
+  }
+})
+
+global.io = io
 
 app.use(
   session({
@@ -34,7 +46,7 @@ app.use(passport.session())
 
 app.use(
   cors({
-    origin: ['http://localhost:5173']
+    origin: corsOrigins
   })
 )
 app.use(cookieParser())
@@ -85,7 +97,6 @@ app.get('/test', async (req, res) => {
 })
 
 app.get('/profile', (req, res) => {
-  // console.log(req.user)
   res.send(`Welcome ${req.user?.fullname}: ${req.isAuthenticated() ? 'true' : 'false'}`)
 })
 

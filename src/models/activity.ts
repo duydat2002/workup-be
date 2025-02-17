@@ -31,6 +31,13 @@ const ActivitySchema = new Schema(
         maxDepth: 1
       }
     },
+    diffs: [
+      {
+        key: String,
+        oldValue: String || Number || Object,
+        newValue: String || Number || Object
+      }
+    ],
     datas: {
       type: Map,
       of: Object
